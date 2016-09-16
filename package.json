@@ -2,11 +2,18 @@
   "name": "bookie",
   "version": "0.0.0",
   "description": "",
-  "main": "dist/main.js",
+  "main": "dist/bookie.js",
   "jsnext:main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build-js && npm run uglify",
+    "build-js": "rollup -n bookie -f umd src/main.js -o dist/bookie.js",
+    "uglify": "uglifyjs dist/bookie.js -cmo dist/bookie.min.js"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^0.35.11",
+    "uglify-js": "^2.7.3"
+  }
 }
