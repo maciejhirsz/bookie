@@ -31,8 +31,8 @@ const increment = store.createAction(state => state + 1);
 const decrement = store.createAction(state => state - 1);
 
 // We can listen to new state emittions with `subscribe`, the callback will
-// receive a single argument which is the new (frozen) state.
-const unsubscribe = store.subscribe(console.log);
+// receive a single argument which is the new state.
+store.subscribe(console.log);
 
 // Finally lets dispatch some actions! All you have to do is call a function,
 // no indirection required.
@@ -42,17 +42,4 @@ increment();
 // -> `2`
 decrement();
 // -> `1`
-
-// Calling the function returned from `subscribe` will unsubscribe that
-// particular listener.
-unsubscribe();
-
-// Since the listener has been removed, calling `dispatch` again will not
-// print anything.
-decrement();
-
-// Finally `getState` returns current state of the store. Once again, this
-// value is frozen at the root level to avoid mutations.
-console.log('Final state', store.getState());
-// -> `Final state 0`
 ```
