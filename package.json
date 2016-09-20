@@ -1,19 +1,25 @@
 {
   "name": "bookie",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Predictable and scalable state container in 0.5kB",
   "main": "dist/bookie.js",
   "jsnext:main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build-js && node ./test | tap-spec",
     "build": "npm run build-js && npm run uglify",
     "build-js": "rollup -n bookie -f umd src/main.js -o dist/bookie.js",
     "uglify": "uglifyjs dist/bookie.js -cmo dist/bookie.min.js"
   },
-  "author": "",
+  "author": "Maciej Hirsz <maciej.hirsz@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maciejhirsz/bookie.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "rollup": "^0.35.11",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.0",
     "uglify-js": "^2.7.3"
   }
 }

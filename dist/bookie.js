@@ -4,14 +4,59 @@
     (factory((global.bookie = global.bookie || {})));
 }(this, (function (exports) { 'use strict';
 
+/**
+ * Helper function assert if value on state[scope] has changed, and
+ * if so create a new state object, cloned from the original state,
+ * and return that as a frozen object.
+ */
+function set(state, scope, value) {
+    if (state != null && state[scope] === value) {
+        return state;
+    }
+
+    var newState = {};
+
+    if (state != null) {
+        for (var key in state) newState[key] = state[key];
+    }
+
+    newState[scope] = value;
+
+    return Object.freeze(newState);
+}
+
+/**
+ * Helper function that allows to easily create registers from a
+ * store object or another register. The magic is in recursively
+ * passing `parentCreateAction` to internal methods via closure
+ * scope.
+ */
+function createRegister(scope, parentCreateAction) {
+    function createAction(action) {
+        return parentCreateAction(function (state, payload) {
+            var scopedState = state == null ? null : state[scope];
+
+            return set(state, scope, action(scopedState, payload));
+        });
+    }
+
+    return Object.freeze({
+        createAction: createAction,
+
+        createRegister: function(scope) {
+            return createRegister(scope, createAction);
+        }
+    });
+}
+
 function createStore(value) {
     var listeners = [];
 
     var state = Object.freeze(value);
     var dispatching = false;
 
-    return {
-        dispatch: function(action, payload) {
+    function createAction (action) {
+        return function (payload) {
             if (dispatching) throw new Error('Overlapping action dispatch!');
 
             dispatching = true;
@@ -25,13 +70,22 @@ function createStore(value) {
             }
 
             dispatching = false;
+        };
+    }
+
+    return Object.freeze({
+        createAction: createAction,
+
+        createRegister: function(scope, value) {
+            state = set(state, scope, value);
+            return createRegister(scope, createAction);
         },
 
-        getState: function() {
+        getState: function () {
             return state;
         },
 
-        subscribe: function(listener) {
+        subscribe: function (listener) {
             var lookupStart = listeners.length;
             var subscribed = true;
 
@@ -50,7 +104,7 @@ function createStore(value) {
                 }
             }
         }
-    };
+    });
 }
 
 exports.createStore = createStore;
