@@ -26,12 +26,9 @@ const store = createStore(0);
 
 // Once we got our store, it's time to define actions. Actions are simple
 // pure functions that take state and return a new state. Optionally they
-// can also accept a second argument for payload.
-//
-// If the state you are passing is an object, it will also be frozen at
-// the root level to ensure that no mutation can occur.
-const increment = store.createAction((state, payload = 1) => state + payload);
-const decrement = store.createAction((state, payload = 1) => state - payload);
+// can also accept a second argument for payload, more about that later.
+const increment = store.createAction(state => state + 1);
+const decrement = store.createAction(state => state - 1);
 
 // We can listen to new state emittions with `subscribe`, the callback will
 // receive a single argument which is the new (frozen) state.
@@ -43,12 +40,8 @@ increment();
 // -> `1`
 increment();
 // -> `2`
-
-// We can pass payload to our action.
-increment(5);
-// -> `7`
 decrement();
-// -> `6`
+// -> `1`
 
 // Calling the function returned from `subscribe` will unsubscribe that
 // particular listener.
@@ -61,5 +54,5 @@ decrement();
 // Finally `getState` returns current state of the store. Once again, this
 // value is frozen at the root level to avoid mutations.
 console.log('Final state', store.getState());
-// -> `Final state 5`
+// -> `Final state 0`
 ```
